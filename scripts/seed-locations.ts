@@ -1,8 +1,10 @@
 // Seeds the `locations` table from content/gcu-locations.md.
 // Usage: npm run seed:locations
-import "dotenv/config";
+import { config } from "dotenv";
 import { createClient } from "@supabase/supabase-js";
 import { getLocationNames } from "../lib/content";
+
+config({ path: ".env.local" });
 
 async function main() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;

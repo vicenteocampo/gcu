@@ -32,6 +32,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Could not create code" }, { status: 500 });
   }
 
+  // Dev fallback: without a Resend key configured, log the code instead of
+  // failing the whole sign-up flow. Remove once RESEND_API_KEY is set.
+  if (!process.env.RESEND_API_KEY) {
+    console.log(`[dev] GCU code for ${normalizedEmail}: ${code}`);
+    return NextResponse.json({ ok: true, devCode: code });
+  }
+
   const { subject, html } = welcomeCodeEmail(code);
 
   try {

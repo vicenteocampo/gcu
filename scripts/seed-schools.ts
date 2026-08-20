@@ -1,8 +1,10 @@
 // Seeds the `schools` table from content/eligible-schools.md.
 // Usage: npm run seed:schools
-import "dotenv/config";
+import { config } from "dotenv";
 import { createClient } from "@supabase/supabase-js";
 import { getEligibleSchoolNames } from "../lib/content";
+
+config({ path: ".env.local" });
 
 async function main() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
