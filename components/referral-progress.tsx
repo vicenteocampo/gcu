@@ -5,7 +5,7 @@ import { useState } from "react";
 // One-liner shared alongside the code on "copy code + message" — Vicente
 // wants to review this copy before it ships to production.
 function inviteMessage(referralCode: string, referralLink: string) {
-  return `I'm inviting you to GCU — a selective, invite-only matchmaking circle. One real match a week, no swiping. Join with my code: ${referralCode} → ${referralLink}`;
+  return `Te invito a GCU — un círculo de matchmaking selectivo y solo por invitación, para latinos egresados de las top 30 universidades de EE.UU. Un match real a la semana, cero swipe. Únete con mi código: ${referralCode} → ${referralLink}`;
 }
 
 export function ReferralProgress({
