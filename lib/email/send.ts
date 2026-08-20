@@ -45,20 +45,35 @@ export async function sendTrackedEmail({ to, profileId, type, subject, html }: S
     }
   }
 
-  const resend = getResendClient();
-  const result = await resend.emails.send({
-    from: EMAIL_FROM,
-    to,
-    subject,
-    html,
-  });
-
-  if (profileId) {
-    await admin.from("email_log").insert({
-      profile_id: profileId,
-      email_type: type,
-    });
+  // Dev fallback: without a Resend key configured, log instead of sending —
+  // and never let email delivery fail the caller's underlying write (the
+  // profile/questionnaire update it's reacting to has usually already
+  // committed by the time this runs). Remove the RESEND_API_KEY check once
+  // it's set for good.
+  if (!process.env.RESEND_API_KEY) {
+    console.log(`[dev] would send "${type}" email to ${to}: ${subject}`);
+    return { skipped: true as const };
   }
 
-  return { skipped: false as const, result };
+  try {
+    const resend = getResendClient();
+    const result = await resend.emails.send({
+      from: EMAIL_FROM,
+      to,
+      subject,
+      html,
+    });
+
+    if (profileId) {
+      await admin.from("email_log").insert({
+        profile_id: profileId,
+        email_type: type,
+      });
+    }
+
+    return { skipped: false as const, result };
+  } catch (err) {
+    console.error(`Failed to send "${type}" email to ${to}:`, err);
+    return { skipped: true as const };
+  }
 }

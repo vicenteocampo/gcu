@@ -19,8 +19,10 @@ function SingleSelectField({
   value: string | undefined;
   onChange: (value: string) => void;
 }) {
-  const displayOptions = question.allowOtherFreeText ? [...options, "Other"] : options;
-  const isOtherSelected = value !== undefined && !options.includes(value) && value !== "";
+  const hasOther = options.includes("Other");
+  const displayOptions = question.allowOtherFreeText && !hasOther ? [...options, "Other"] : options;
+  const selectableOptions = hasOther ? options.filter((o) => o !== "Other") : options;
+  const isOtherSelected = value !== undefined && !selectableOptions.includes(value) && value !== "";
   const [otherText, setOtherText] = useState(isOtherSelected ? value ?? "" : "");
   const [showOther, setShowOther] = useState(isOtherSelected);
 
@@ -321,6 +323,20 @@ export function QuestionnaireFlow({
 
   async function handleSectionSubmit(e: React.FormEvent, section: QuestionSection) {
     e.preventDefault();
+
+    // File inputs can't express "at least N files" via native HTML
+    // validation, so photo_upload's minPhotos is checked here.
+    for (const q of section.questions) {
+      if (q.type === "photo_upload" && q.required && q.minPhotos) {
+        const count = (answers[q.key] as string[] | undefined)?.length ?? 0;
+        if (count < q.minPhotos) {
+          setError(`Please add at least ${q.minPhotos} photos.`);
+          return;
+        }
+      }
+    }
+    setError(null);
+
     const sectionAnswers: Answers = {};
     for (const q of section.questions) {
       if (answers[q.key] !== undefined) sectionAnswers[q.key] = answers[q.key];
@@ -380,6 +396,8 @@ export function QuestionnaireFlow({
                 />
               </div>
             ))}
+
+            {error && <p className="text-sm text-red-600">{error}</p>}
 
             <div className="flex justify-between pt-2">
               <button
