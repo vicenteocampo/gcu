@@ -6,16 +6,19 @@ than typing anything in. Vicente: edit freely, this is a starting point.
 -->
 
 1. Mexico City
-2. Bogotá
-3. São Paulo
-4. Buenos Aires
-5. Lima
-6. Santiago
-7. Panama City
-8. Miami
-9. New York City
-10. Los Angeles
-11. San Francisco Bay Area
-12. Houston
-13. Madrid
-14. Other
+2. Guadalajara
+3. Monterrey
+4. Bogotá
+5. Buenos Aires
+6. Lima
+7. Santiago
+8. Caracas
+9. Quito
+10. Panama City
+11. Miami
+12. New York City
+13. Los Angeles
+14. San Francisco Bay Area
+15. Houston
+16. Madrid
+17. Other

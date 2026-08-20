@@ -2,6 +2,12 @@
 
 import { useState } from "react";
 
+// One-liner shared alongside the code on "copy code + message" — Vicente
+// wants to review this copy before it ships to production.
+function inviteMessage(referralCode: string, referralLink: string) {
+  return `I'm inviting you to GCU — a selective, invite-only matchmaking circle. One real match a week, no swiping. Join with my code: ${referralCode} → ${referralLink}`;
+}
+
 export function ReferralProgress({
   referralCode,
   referralCount,
@@ -13,13 +19,19 @@ export function ReferralProgress({
   activated: boolean;
   siteUrl: string;
 }) {
-  const [copied, setCopied] = useState(false);
+  const [copiedWhat, setCopiedWhat] = useState<"code" | "message" | null>(null);
   const referralLink = `${siteUrl}/?ref=${referralCode}`;
 
-  async function handleCopy() {
-    await navigator.clipboard.writeText(referralLink);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  async function handleCopyCode() {
+    await navigator.clipboard.writeText(referralCode);
+    setCopiedWhat("code");
+    setTimeout(() => setCopiedWhat(null), 2000);
+  }
+
+  async function handleCopyMessage() {
+    await navigator.clipboard.writeText(inviteMessage(referralCode, referralLink));
+    setCopiedWhat("message");
+    setTimeout(() => setCopiedWhat(null), 2000);
   }
 
   return (
@@ -60,12 +72,20 @@ export function ReferralProgress({
               <p className="mt-1 font-mono text-xl tracking-widest">{referralCode}</p>
             </div>
 
-            <button
-              onClick={handleCopy}
-              className="mt-4 w-full rounded-md bg-neutral-900 px-4 py-3 text-sm font-medium text-white"
-            >
-              {copied ? "Link copied" : "Copy invite link"}
-            </button>
+            <div className="mt-4 space-y-2">
+              <button
+                onClick={handleCopyCode}
+                className="w-full rounded-md border border-neutral-300 px-4 py-3 text-sm font-medium text-neutral-900"
+              >
+                {copiedWhat === "code" ? "Code copied" : "Copy code only"}
+              </button>
+              <button
+                onClick={handleCopyMessage}
+                className="w-full rounded-md bg-neutral-900 px-4 py-3 text-sm font-medium text-white"
+              >
+                {copiedWhat === "message" ? "Message copied" : "Copy code + message"}
+              </button>
+            </div>
           </>
         )}
       </div>

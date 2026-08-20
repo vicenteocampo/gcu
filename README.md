@@ -35,6 +35,7 @@ See [docs/gcu-initial-prompt.md](docs/gcu-initial-prompt.md) for the full spec.
    - `RESEND_API_KEY` — saved for later; unused until Gmail is swapped out
    - `ADMIN_EMAILS` — comma-separated allow-list for `/admin`
    - `NEXT_PUBLIC_SITE_URL` — `http://localhost:3000` locally
+   - `BOOTSTRAP_INVITE_CODE` — see "Invite-only sign-up" below
 
 3. **Link and apply the schema** via the Supabase CLI (already installed —
    `supabase init` has been run):
@@ -74,6 +75,27 @@ See [docs/gcu-initial-prompt.md](docs/gcu-initial-prompt.md) for the full spec.
 - `content/gcu-consent.md` — the consent checklist statements (final questionnaire page)
 - `content/gcu-questionnaire.md` — source-of-truth copy for the 33 questions; keep
   `lib/questions.ts` in sync with it (the renderer reads only the TS config)
+
+## Invite-only sign-up
+
+A valid referral code is required to sign up — the email step on `/` is
+hidden until a code validates (`/api/referral/validate`). Existing members
+re-entering their email to sign back in are exempted (checked by email
+against `profiles` in `/api/auth/send-code`) — the gate is only for *new*
+sign-ups.
+
+Since a referral code normally comes from an existing profile, the very
+first invitees need another way in: `BOOTSTRAP_INVITE_CODE` in `.env.local`
+always validates, with no profile required. Hand it out to your first batch
+of invitees, then everyone after that uses a real referral code from
+`/referral`. See `lib/invite.ts`.
+
+## Referral sharing
+
+The `/referral` screen (`components/referral-progress.tsx`) offers two copy
+options: the bare code, or the code plus a one-line explanation of GCU
+(`inviteMessage` in that file) — review that copy before shipping to
+production, per Vicente.
 
 ## Eligibility rule
 

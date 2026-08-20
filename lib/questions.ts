@@ -42,15 +42,8 @@ export const QUESTIONNAIRE_SECTIONS: QuestionSection[] = [
         key: "gender_identity",
         type: "single_select",
         label: "Gender identity",
-        options: ["Male", "Female", "Other"],
-        allowOtherFreeText: true,
+        options: ["Male", "Female"],
         required: true,
-      },
-      {
-        key: "phone_number",
-        type: "short_text",
-        label: "What's your phone number?",
-        helperText: "So I can reach out via text and coordinate.",
       },
       { key: "linkedin_profile", type: "short_text", label: "Your LinkedIn profile", required: true },
       {
@@ -68,7 +61,12 @@ export const QUESTIONNAIRE_SECTIONS: QuestionSection[] = [
         required: true,
       },
       { key: "languages_spoken", type: "short_text", label: "Languages you speak" },
-      { key: "height", type: "short_text", label: "Your height" },
+      {
+        key: "height",
+        type: "short_text",
+        label: "Your height (in meters)",
+        helperText: "e.g. 1.75",
+      },
       {
         key: "photos",
         type: "photo_upload",
@@ -87,13 +85,6 @@ export const QUESTIONNAIRE_SECTIONS: QuestionSection[] = [
         type: "single_select",
         label: "What are you looking for?",
         options: ["Marriage", "Serious relationship / partnership", "Casual dating / short term", "Unsure"],
-        required: true,
-      },
-      {
-        key: "how_can_i_help",
-        type: "multi_select",
-        label: "How can I help you?",
-        options: ["Being introduced to potential matches", "Support and help in my dating journey", "Not sure yet"],
         required: true,
       },
       {

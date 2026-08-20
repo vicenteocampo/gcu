@@ -1,4 +1,5 @@
-// Seeds the `locations` table from content/gcu-locations.md.
+// Syncs the `locations` table with content/gcu-locations.md: adds new
+// names, removes ones no longer in the file.
 // Usage: npm run seed:locations
 import { config } from "dotenv";
 import { createClient } from "@supabase/supabase-js";
@@ -20,19 +21,44 @@ async function main() {
   const supabase = createClient(url, serviceRoleKey);
   const names = getLocationNames();
 
-  const { error } = await supabase
+  const { error: upsertError } = await supabase
     .from("locations")
     .upsert(
       names.map((name) => ({ name })),
       { onConflict: "name", ignoreDuplicates: true }
     );
 
-  if (error) {
-    console.error("Seed failed:", error.message);
+  if (upsertError) {
+    console.error("Seed failed:", upsertError.message);
     process.exit(1);
   }
 
-  console.log(`Seeded ${names.length} locations.`);
+  const { data: existing, error: selectError } = await supabase
+    .from("locations")
+    .select("id, name");
+
+  if (selectError) {
+    console.error("Sync failed:", selectError.message);
+    process.exit(1);
+  }
+
+  const toRemove = (existing ?? []).filter((row) => !names.includes(row.name));
+
+  if (toRemove.length > 0) {
+    const { error: deleteError } = await supabase
+      .from("locations")
+      .delete()
+      .in("id", toRemove.map((row) => row.id));
+
+    if (deleteError) {
+      console.error("Removing stale locations failed:", deleteError.message);
+      process.exit(1);
+    }
+  }
+
+  console.log(
+    `Synced locations: ${names.length} total${toRemove.length ? `, removed ${toRemove.map((r) => r.name).join(", ")}` : ""}.`
+  );
 }
 
 main();

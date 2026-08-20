@@ -15,8 +15,7 @@ Some questions double as eligibility/matching signals — flagged inline.
 - **full_name** (short_text, required) — "Full name"
 - **birth_date** (date, required) — "Birth date"
 - **gender_identity** (single_select, required) — "Gender identity"
-  - Options: Male, Female, Other (free text if selected)
-- **phone_number** (short_text) — "What's your phone number? So I can reach out via text and coordinate."
+  - Options: Male, Female
 - **linkedin_profile** (short_text, required) — "Your LinkedIn profile"
 - **instagram_handle** (short_text, optional) — "Instagram @handle or other social media (optional)"
 - **occupation_industry** (short_text) — "Occupation / Company / Industry"
@@ -24,15 +23,13 @@ Some questions double as eligibility/matching signals — flagged inline.
   - Options: pulled dynamically from `content/eligible-schools.md` / the `schools` Supabase table, plus a final "Other" option
   - If "Other" is selected: don't reject — flag `school_on_list = false` on the profile. Combined with the LatAm geography gate, this determines whether the user is auto-eligible or goes to "on hold" (see Eligibility section in the main prompt).
 - **languages_spoken** (short_text) — "Languages you speak"
-- **height** (short_text) — "Your height"
+- **height** (short_text) — "Your height (in meters)", e.g. 1.75
 - **photos** (photo_upload, required, 4–6 images) — "Please share a few photos of you — face and body"
 
 ## Section 2 — What are you looking for
 
 - **relationship_goal** (single_select, required) — "What are you looking for?"
   - Options: Marriage, Serious relationship / partnership, Casual dating / short term, Unsure
-- **how_can_i_help** (multi_select, required) — "How can I help you?"
-  - Options: Being introduced to potential matches, Support and help in my dating journey, Not sure yet
 - **interested_in_meeting** (single_select, required) — "Who are you interested in meeting?"
   - Options: Women, Men (no "Other" option)
 - **youngest_age** (short_text, required) — "What is the youngest age you would seriously consider dating?"
