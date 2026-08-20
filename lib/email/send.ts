@@ -5,6 +5,7 @@ export type EmailType =
   | "welcome_code"
   | "onboarding_nudge"
   | "submission_confirmation"
+  | "on_hold_notice"
   | "referral_reminder"
   | "activated"
   | "weekly_match";
@@ -14,6 +15,7 @@ export type EmailType =
 // per-week key once matching logic exists.
 const ONE_OFF_TYPES: EmailType[] = [
   "submission_confirmation",
+  "on_hold_notice",
   "activated",
   "onboarding_nudge",
   "referral_reminder",

@@ -46,7 +46,19 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(redirectUrl);
   }
 
-  if (pathname.startsWith("/admin")) {
+  if (pathname.startsWith("/referral") && user) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("eligibility_status")
+      .eq("id", user.id)
+      .single();
+
+    if (profile?.eligibility_status !== "eligible") {
+      return NextResponse.redirect(new URL("/thank-you", request.url));
+    }
+  }
+
+  if (pathname.startsWith("/admin") || pathname.startsWith("/api/admin")) {
     const adminEmails = (process.env.ADMIN_EMAILS ?? "")
       .split(",")
       .map((e) => e.trim().toLowerCase())
@@ -67,5 +79,6 @@ export const config = {
     "/thank-you/:path*",
     "/referral/:path*",
     "/admin/:path*",
+    "/api/admin/:path*",
   ],
 };

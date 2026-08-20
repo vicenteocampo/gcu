@@ -1,4 +1,5 @@
 import { createAdminClient } from "@/lib/supabase/admin";
+import { EligibilityOverride } from "@/components/eligibility-override";
 
 export const dynamic = "force-dynamic";
 
@@ -8,7 +9,7 @@ export default async function AdminPage() {
   const { data: profiles, error } = await admin
     .from("profiles")
     .select(
-      "email, full_name, country, school_id, school_other, eligible, referral_code, referral_count, activated, questionnaire_completed, created_at, schools(name)"
+      "id, email, full_name, school, based_in, eligibility_status, referral_code, referral_count, activated, questionnaire_completed, created_at"
     )
     .order("created_at", { ascending: false });
 
@@ -27,9 +28,9 @@ export default async function AdminPage() {
             <tr className="border-b border-neutral-200 text-left text-neutral-500">
               <th className="py-2 pr-4">Email</th>
               <th className="py-2 pr-4">Name</th>
-              <th className="py-2 pr-4">Country</th>
               <th className="py-2 pr-4">School</th>
-              <th className="py-2 pr-4">Eligible</th>
+              <th className="py-2 pr-4">Based in</th>
+              <th className="py-2 pr-4">Eligibility</th>
               <th className="py-2 pr-4">Referral code</th>
               <th className="py-2 pr-4">Referrals</th>
               <th className="py-2 pr-4">Activated</th>
@@ -39,16 +40,14 @@ export default async function AdminPage() {
           </thead>
           <tbody>
             {profiles?.map((p) => (
-              <tr key={p.referral_code} className="border-b border-neutral-100">
+              <tr key={p.id} className="border-b border-neutral-100">
                 <td className="py-2 pr-4">{p.email}</td>
                 <td className="py-2 pr-4">{p.full_name ?? "—"}</td>
-                <td className="py-2 pr-4">{p.country ?? "—"}</td>
+                <td className="py-2 pr-4">{p.school ?? "—"}</td>
+                <td className="py-2 pr-4">{p.based_in ?? "—"}</td>
                 <td className="py-2 pr-4">
-                  {(p.schools as unknown as { name: string } | null)?.name ??
-                    p.school_other ??
-                    "—"}
+                  <EligibilityOverride profileId={p.id} eligibilityStatus={p.eligibility_status} />
                 </td>
-                <td className="py-2 pr-4">{p.eligible ? "Yes" : "No"}</td>
                 <td className="py-2 pr-4 font-mono">{p.referral_code}</td>
                 <td className="py-2 pr-4">{p.referral_count}</td>
                 <td className="py-2 pr-4">{p.activated ? "Yes" : "No"}</td>

@@ -1,17 +1,12 @@
-import { isLatamCountry } from "@/lib/latam-countries";
+export type EligibilityStatus = "eligible" | "on_hold" | "not_eligible";
 
-// Eligibility rule (confirmed with product owner): a profile is eligible
-// only when BOTH gates pass — LatAm nationality/residency AND target-school
-// alum. Selecting "other" for school flags the profile for manual review
-// (school_eligible stays false until an admin overrides it).
-export function computeEligibility(args: {
-  country: string | null | undefined;
-  schoolId: number | null | undefined;
-  schoolOther: string | null | undefined;
-}) {
-  const geo_eligible = isLatamCountry(args.country);
-  const school_eligible = Boolean(args.schoolId) && !args.schoolOther;
-  const eligible = geo_eligible && school_eligible;
-
-  return { geo_eligible, school_eligible, eligible };
+// Eligibility rule (per spec): school on the list OR location on the list
+// -> eligible. "Other" on both never auto-rejects — it goes on_hold for
+// manual review in /admin. `not_eligible` is a manual-only admin override,
+// never set automatically.
+export function computeEligibilityStatus(args: {
+  schoolOnList: boolean;
+  locationOnList: boolean;
+}): EligibilityStatus {
+  return args.schoolOnList || args.locationOnList ? "eligible" : "on_hold";
 }

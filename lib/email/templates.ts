@@ -41,6 +41,16 @@ export function submissionConfirmationEmail() {
   };
 }
 
+export function onHoldEmail() {
+  return {
+    subject: "Your profile is under review",
+    html: wrapper(`
+      <h1 style="font-size: 20px;">You're under review</h1>
+      <p>Thanks for finishing the questionnaire. Your profile needs a quick manual review before matching starts — Vicente will follow up.</p>
+    `),
+  };
+}
+
 export function referralReminderEmail(referralCount: number, referralCode: string) {
   return {
     subject: `${referralCount}/2 — almost there`,

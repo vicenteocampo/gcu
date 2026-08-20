@@ -42,3 +42,35 @@ export function getEligibleSchoolNames(): string[] {
     .filter((line) => line.startsWith("- "))
     .map((line) => line.slice(2).trim());
 }
+
+// Reads content/gcu-locations.md ("N. City Name" per line) for seeding the
+// `locations` table. "Other" is a UI-only fallback, not a real location —
+// excluded here. See scripts/seed-locations.ts.
+export function getLocationNames(): string[] {
+  const raw = fs.readFileSync(
+    path.join(process.cwd(), "content", "gcu-locations.md"),
+    "utf-8"
+  );
+
+  return raw
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line) => /^\d+\.\s+/.test(line))
+    .map((line) => line.replace(/^\d+\.\s*/, "").trim())
+    .filter((line) => line.toLowerCase() !== "other");
+}
+
+// Reads content/gcu-consent.md ("- statement" per line) for the consent
+// checklist page at the end of the questionnaire.
+export function getConsentStatements(): string[] {
+  const raw = fs.readFileSync(
+    path.join(process.cwd(), "content", "gcu-consent.md"),
+    "utf-8"
+  );
+
+  return raw
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line) => line.startsWith("- "))
+    .map((line) => line.slice(2).trim());
+}

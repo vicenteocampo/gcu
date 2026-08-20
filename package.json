@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "seed:schools": "tsx scripts/seed-schools.ts"
+    "seed:schools": "tsx scripts/seed-schools.ts",
+    "seed:locations": "tsx scripts/seed-locations.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.4",
