@@ -1,0 +1,59 @@
+import { NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
+import { sendTrackedEmail } from "@/lib/email/send";
+import { submissionConfirmationEmail } from "@/lib/email/templates";
+
+export async function POST(request: Request) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  }
+
+  const { answers, final } = (await request.json()) as {
+    answers: Record<string, unknown>;
+    final?: boolean;
+  };
+
+  const rows = Object.entries(answers ?? {}).map(([question_key, answer]) => ({
+    profile_id: user.id,
+    question_key,
+    answer,
+  }));
+
+  if (rows.length > 0) {
+    const { error } = await supabase
+      .from("questionnaire_responses")
+      .upsert(rows, { onConflict: "profile_id,question_key" });
+
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+  }
+
+  if (final) {
+    const { error: profileError } = await supabase
+      .from("profiles")
+      .update({ questionnaire_completed: true })
+      .eq("id", user.id);
+
+    if (profileError) {
+      return NextResponse.json({ error: profileError.message }, { status: 500 });
+    }
+
+    const { subject, html } = submissionConfirmationEmail();
+    await sendTrackedEmail({
+      to: user.email!,
+      profileId: user.id,
+      type: "submission_confirmation",
+      subject,
+      html,
+    });
+  }
+
+  return NextResponse.json({ ok: true });
+}
