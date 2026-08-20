@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { getResendClient, EMAIL_FROM } from "@/lib/email/resend";
+import { sendTrackedEmail } from "@/lib/email/send";
 import { welcomeCodeEmail } from "@/lib/email/templates";
 
 const CODE_TTL_MINUTES = 10;
@@ -32,21 +32,16 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Could not create code" }, { status: 500 });
   }
 
-  // Dev fallback: without a Resend key configured, log the code instead of
-  // failing the whole sign-up flow. Remove once RESEND_API_KEY is set.
-  if (!process.env.RESEND_API_KEY) {
-    console.log(`[dev] GCU code for ${normalizedEmail}: ${code}`);
-    return NextResponse.json({ ok: true, devCode: code });
-  }
-
   const { subject, html } = welcomeCodeEmail(code);
+  const result = await sendTrackedEmail({
+    to: normalizedEmail,
+    type: "welcome_code",
+    subject,
+    html,
+  });
 
-  try {
-    const resend = getResendClient();
-    await resend.emails.send({ from: EMAIL_FROM, to: normalizedEmail, subject, html });
-  } catch {
-    return NextResponse.json({ error: "Could not send email" }, { status: 502 });
-  }
-
-  return NextResponse.json({ ok: true });
+  // sendTrackedEmail never throws — a delivery failure shouldn't block
+  // sign-up. Surface the code directly if it wasn't actually sent (missing
+  // Gmail creds, or the send itself failed) so local testing still works.
+  return NextResponse.json({ ok: true, devCode: result.skipped ? code : undefined });
 }

@@ -1,5 +1,5 @@
 import { createAdminClient } from "@/lib/supabase/admin";
-import { EMAIL_FROM, getResendClient } from "@/lib/email/resend";
+import { getEmailFrom, getMailer } from "@/lib/email/mailer";
 
 export type EmailType =
   | "welcome_code"
@@ -45,20 +45,19 @@ export async function sendTrackedEmail({ to, profileId, type, subject, html }: S
     }
   }
 
-  // Dev fallback: without a Resend key configured, log instead of sending —
-  // and never let email delivery fail the caller's underlying write (the
-  // profile/questionnaire update it's reacting to has usually already
-  // committed by the time this runs). Remove the RESEND_API_KEY check once
-  // it's set for good.
-  if (!process.env.RESEND_API_KEY) {
+  // Dev fallback: without Gmail SMTP credentials configured, log instead of
+  // sending — and never let email delivery fail the caller's underlying
+  // write (the profile/questionnaire update it's reacting to has usually
+  // already committed by the time this runs).
+  if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
     console.log(`[dev] would send "${type}" email to ${to}: ${subject}`);
     return { skipped: true as const };
   }
 
   try {
-    const resend = getResendClient();
-    const result = await resend.emails.send({
-      from: EMAIL_FROM,
+    const mailer = getMailer();
+    const result = await mailer.sendMail({
+      from: getEmailFrom(),
       to,
       subject,
       html,

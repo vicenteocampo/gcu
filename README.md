@@ -10,7 +10,8 @@ See [docs/gcu-initial-prompt.md](docs/gcu-initial-prompt.md) for the full spec.
 
 - Next.js (App Router) + TypeScript + Tailwind CSS
 - Supabase (Postgres + Auth + Storage), accessed via `@supabase/ssr`
-- Resend for transactional email
+- Email: Gmail SMTP for now (`lib/email/mailer.ts`, via an App Password) —
+  swap for Resend once a sending domain is set up
 - Deployment target: Vercel
 
 ## Setup
@@ -27,7 +28,11 @@ See [docs/gcu-initial-prompt.md](docs/gcu-initial-prompt.md) for the full spec.
    - `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`,
      `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_DB_PASSWORD` — from the Supabase
      project settings
-   - `RESEND_API_KEY` — from Resend
+   - `GMAIL_USER` / `GMAIL_APP_PASSWORD` — the Gmail address sending email and
+     a 16-character App Password for it (needs 2-Step Verification enabled;
+     generate at myaccount.google.com/apppasswords). Without these set,
+     emails just log to the server console instead of sending.
+   - `RESEND_API_KEY` — saved for later; unused until Gmail is swapped out
    - `ADMIN_EMAILS` — comma-separated allow-list for `/admin`
    - `NEXT_PUBLIC_SITE_URL` — `http://localhost:3000` locally
 
@@ -86,11 +91,9 @@ self-promote their own `eligibility_status` via the browser.
 
 ## Known gaps / TODOs
 
-- The custom 8-digit OTP → Supabase session handoff
-  (`admin.generateLink` + client `verifyOtp`, see
-  `app/api/auth/verify-code/route.ts` and `app/verify/page.tsx`) hasn't been
-  smoke-tested against a live Supabase project yet — do that first once
-  env vars are filled in.
+- Photo upload (`photo_upload` question type, Supabase Storage) hasn't been
+  tested through an actual file picker — everything else in the flow has
+  been verified end-to-end against a live Supabase project.
 - `app/api/cron/lifecycle-emails/route.ts` is a working stub (onboarding
   nudge, referral reminder, activated) but isn't wired to a schedule. Add a
   Vercel Cron entry once the content/cadence is approved.
@@ -98,3 +101,5 @@ self-promote their own `eligibility_status` via the browser.
   no matching logic yet — out of scope for this pass.
 - Referral reminder currently sends once total per profile, not once per
   0/2 → 1/2 progress step.
+- Gmail SMTP is a stand-in for a real sending domain — expect it to feel
+  slower than a dedicated ESP and to cap out around ~500 sends/day.
