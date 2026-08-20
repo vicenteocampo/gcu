@@ -7,6 +7,7 @@ export type QuestionType =
   | "date"
   | "single_select"
   | "multi_select"
+  | "ranked_select"
   | "scale"
   | "photo_upload";
 
@@ -15,7 +16,7 @@ export type Question = {
   type: QuestionType;
   label: string;
   helperText?: string;
-  options?: string[]; // static options for single_select / multi_select
+  options?: string[]; // static options for single_select / multi_select / ranked_select
   optionsSource?: "schools" | "locations"; // dynamic options fetched from Supabase; "Other" appended in the UI
   allowOtherFreeText?: boolean; // last option "Other" reveals a free-text input
   scaleMin?: number;
@@ -106,8 +107,9 @@ export const QUESTIONNAIRE_SECTIONS: QuestionSection[] = [
       },
       {
         key: "match_radius",
-        type: "single_select",
+        type: "ranked_select",
         label: "Where should I match you with?",
+        helperText: "Tap to rank the ones you'd consider, in order of preference. Skip any you wouldn't.",
         options: ["Only my city", "Only my country", "Open to anywhere"],
         required: true,
       },

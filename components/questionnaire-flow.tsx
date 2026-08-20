@@ -100,6 +100,54 @@ function MultiSelectField({
   );
 }
 
+function RankedSelectField({
+  question,
+  value,
+  onChange,
+}: {
+  question: Question;
+  value: string[] | undefined;
+  onChange: (value: string[]) => void;
+}) {
+  const ranked = value ?? [];
+
+  function toggle(option: string) {
+    if (ranked.includes(option)) {
+      onChange(ranked.filter((o) => o !== option));
+    } else {
+      onChange([...ranked, option]);
+    }
+  }
+
+  return (
+    <div className="space-y-2">
+      {question.options?.map((option) => {
+        const rank = ranked.indexOf(option);
+        const isRanked = rank !== -1;
+        return (
+          <button
+            key={option}
+            type="button"
+            onClick={() => toggle(option)}
+            className={`flex w-full items-center gap-3 rounded-md border px-4 py-3 text-left ${
+              isRanked ? "border-neutral-900" : "border-neutral-300"
+            }`}
+          >
+            <span
+              className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-medium ${
+                isRanked ? "bg-neutral-900 text-white" : "border border-neutral-300 text-transparent"
+              }`}
+            >
+              {isRanked ? rank + 1 : "·"}
+            </span>
+            {option}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 function ScaleField({
   question,
   value,
@@ -279,6 +327,14 @@ function QuestionField({
           onChange={onChange}
         />
       );
+    case "ranked_select":
+      return (
+        <RankedSelectField
+          question={question}
+          value={value as string[] | undefined}
+          onChange={onChange}
+        />
+      );
     case "scale":
       return <ScaleField question={question} value={value as string | undefined} onChange={onChange} />;
     case "photo_upload":
@@ -335,7 +391,7 @@ export function QuestionnaireFlow({
           return;
         }
       }
-      if (q.type === "multi_select" && q.required) {
+      if ((q.type === "multi_select" || q.type === "ranked_select") && q.required) {
         const count = (answers[q.key] as string[] | undefined)?.length ?? 0;
         if (count < 1) {
           setError(`Please select at least one option for "${q.label}".`);

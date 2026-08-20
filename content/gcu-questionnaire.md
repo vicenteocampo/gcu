@@ -5,7 +5,7 @@ a type, the prompt text, and options where relevant. Claude Code: turn this into
 a JSON/TS config array that the generic questionnaire renderer consumes — don't
 hardcode these in components.
 
-Types used: short_text, long_text, date, single_select, multi_select, scale, photo_upload
+Types used: short_text, long_text, date, single_select, multi_select, ranked_select, scale, photo_upload
 
 Some questions double as eligibility/matching signals — flagged inline.
 -->
@@ -37,7 +37,7 @@ Some questions double as eligibility/matching signals — flagged inline.
 - **based_in** (single_select, required, ELIGIBILITY-RELATED) — "Where are you based?"
   - Options: pulled dynamically from `content/gcu-locations.md` / a `locations` Supabase table (closed list, no open free-text), ending in "Other"
   - If "Other" is selected: flag `location_on_list = false` — same "on hold" treatment as an unrecognized school.
-- **match_radius** (single_select, required) — "Where should I match you with?"
+- **match_radius** (ranked_select, required) — "Where should I match you with?" — tap to rank only the ones you'd consider, in preference order; you don't have to rank all of them
   - Options: Only my city, Only my country, Open to anywhere
 - **hometown** (short_text) — "Hometown"
 
