@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { ADMIN_SESSION_COOKIE, verifyAdminSessionValue } from "@/lib/admin-session";
 
 const PROTECTED_PREFIXES = [
   "/onboarding",
@@ -58,14 +59,23 @@ export async function proxy(request: NextRequest) {
     }
   }
 
-  if (pathname.startsWith("/admin") || pathname.startsWith("/api/admin")) {
-    const adminEmails = (process.env.ADMIN_EMAILS ?? "")
-      .split(",")
-      .map((e) => e.trim().toLowerCase())
-      .filter(Boolean);
+  // Admin auth is a separate email + static 6-digit PIN gate (app/admin/login),
+  // not the customer-facing email+OTP flow — checked via a signed cookie,
+  // independent of the Supabase user session.
+  const isAdminRoute = pathname.startsWith("/admin") || pathname.startsWith("/api/admin");
+  const isAdminAuthRoute =
+    pathname === "/admin/login" ||
+    pathname === "/api/admin/login" ||
+    pathname === "/api/admin/logout";
 
-    if (!user || !adminEmails.includes((user.email ?? "").toLowerCase())) {
-      return NextResponse.redirect(new URL("/", request.url));
+  if (isAdminRoute && !isAdminAuthRoute) {
+    const adminEmail = verifyAdminSessionValue(request.cookies.get(ADMIN_SESSION_COOKIE)?.value);
+
+    if (!adminEmail) {
+      if (pathname.startsWith("/api/admin")) {
+        return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+      }
+      return NextResponse.redirect(new URL("/admin/login", request.url));
     }
   }
 

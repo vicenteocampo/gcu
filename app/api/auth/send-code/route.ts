@@ -31,7 +31,10 @@ export async function POST(request: Request) {
   const isReturningUser = Boolean(existingProfile && existingProfile.length > 0);
 
   if (!isReturningUser && !(await isValidInviteCode(referralCode))) {
-    return NextResponse.json({ error: "Invalid or missing invite code" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Invalid or missing invite code", code: "invite_code_required" },
+      { status: 400 }
+    );
   }
 
   const code = generateCode();

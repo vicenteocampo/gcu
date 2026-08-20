@@ -324,13 +324,21 @@ export function QuestionnaireFlow({
   async function handleSectionSubmit(e: React.FormEvent, section: QuestionSection) {
     e.preventDefault();
 
-    // File inputs can't express "at least N files" via native HTML
-    // validation, so photo_upload's minPhotos is checked here.
+    // Checkbox groups can't express "at least one checked" via native HTML
+    // `required` (that only constrains individual checkboxes), and file
+    // inputs can't express "at least N files" — both checked here instead.
     for (const q of section.questions) {
       if (q.type === "photo_upload" && q.required && q.minPhotos) {
         const count = (answers[q.key] as string[] | undefined)?.length ?? 0;
         if (count < q.minPhotos) {
           setError(`Please add at least ${q.minPhotos} photos.`);
+          return;
+        }
+      }
+      if (q.type === "multi_select" && q.required) {
+        const count = (answers[q.key] as string[] | undefined)?.length ?? 0;
+        if (count < 1) {
+          setError(`Please select at least one option for "${q.label}".`);
           return;
         }
       }

@@ -7,8 +7,8 @@ export type OnboardingCard = {
 };
 
 // Reads content/onboarding-cards.md so copy can be edited without touching
-// components. Cards are delimited by "## Card N" headings with **Title:**
-// and **Body:** lines.
+// components. Cards are delimited by "## Card N" headings with a title line
+// (**Title:** or **Título:**) and a body line (**Body:** or **Cuerpo:**).
 export function getOnboardingCards(): OnboardingCard[] {
   const raw = fs.readFileSync(
     path.join(process.cwd(), "content", "onboarding-cards.md"),
@@ -18,8 +18,8 @@ export function getOnboardingCards(): OnboardingCard[] {
   const cardBlocks = raw.split(/^## Card \d+\s*$/m).slice(1);
 
   return cardBlocks.map((block) => {
-    const titleMatch = block.match(/\*\*Title:\*\*\s*(.+)/);
-    const bodyMatch = block.match(/\*\*Body:\*\*\s*([\s\S]*?)(?:\n\n|$)/);
+    const titleMatch = block.match(/\*\*(?:Title|Título):\*\*\s*(.+)/);
+    const bodyMatch = block.match(/\*\*(?:Body|Cuerpo):\*\*\s*([\s\S]*?)(?:\n\n|$)/);
 
     return {
       title: titleMatch?.[1]?.trim() ?? "",

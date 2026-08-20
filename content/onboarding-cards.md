@@ -1,21 +1,30 @@
 <!--
-Onboarding cards for GCU (Gente Como Uno).
-4 cards, shown in order, next/back nav, no skipping.
-Edit freely — the app should read this file directly rather than hardcoding copy.
+Onboarding cards para GCU (Gente Como Uno).
+6 cards, mostradas en orden, navegación next/back, sin poder saltar.
+Editar libremente — la app debe leer este archivo directamente en vez de
+tener el copy hardcodeado en el código.
 -->
 
 ## Card 1
-**Title:** No swiping. No small talk with 47 strangers.
-**Body:** GCU isn't a numbers game. We're not here to give you options — we're here to give you one good one.
+**Título:** Te fuiste de casa a una universidad top en USA.
+**Cuerpo:** Saliste, viviste, te metiste con gringos, con europeos, con asiáticos... Pero ahora quieres volver a casa — y salir con alguien de Latinoamérica.
 
 ## Card 2
-**Title:** One match. Every week.
-**Body:** Quality beats quantity, every time. Answer a few real questions, and we'll do the matching. No profile to obsess over, no algorithm to game.
+**Título:** Pero no con un latinoamericano cualquiera.
+**Cuerpo:** Quieres salir con alguien como tú. Como decimos en GCU: "Gente Como Uno."
 
 ## Card 3
-**Title:** Curated, not crowded.
-**Body:** GCU is small on purpose. Latin Americans, wherever they live, plus a short list of people who get the room. Selective isn't a bug — it's the whole point.
+**Título:** Creamos GCU para encontrar a gente como tú.
+**Cuerpo:** No swiping. No perfiles públicos. No algoritmos. No bullshit. Solo por referidos — así mantenemos esto a un grado de separación.
 
 ## Card 4
-**Title:** Your circle just got bigger — by exactly two people.
-**Body:** GCU runs on trust, not ads. To join the pool, you'll bring two people in. That's it. Let's get started.
+**Título:** Únicamente aceptamos gente de una lista selecta de universidades top en EE.UU. — y de Latinoamérica.
+**Cuerpo:** Nos reservamos el derecho de admisión. Cada semana, el GCU Collective te manda un match que creemos puede ser un buen fit.
+
+## Card 5
+**Título:** Responde la encuesta.
+**Cuerpo:** Al terminar, te compartimos tu código de referidos. Trae a 2 personas — si no, no te pasamos matches.
+
+## Card 6
+**Título:** Bienvenido a GCU.
+**Cuerpo:** Empecemos.

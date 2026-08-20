@@ -28,7 +28,7 @@ Some questions double as eligibility/matching signals — flagged inline.
 
 ## Section 2 — What are you looking for
 
-- **relationship_goal** (single_select, required) — "What are you looking for?"
+- **relationship_goal** (multi_select, required) — "What are you looking for?"
   - Options: Marriage, Serious relationship / partnership, Casual dating / short term, Unsure
 - **interested_in_meeting** (single_select, required) — "Who are you interested in meeting?"
   - Options: Women, Men (no "Other" option)

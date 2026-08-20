@@ -82,7 +82,7 @@ export const QUESTIONNAIRE_SECTIONS: QuestionSection[] = [
     questions: [
       {
         key: "relationship_goal",
-        type: "single_select",
+        type: "multi_select",
         label: "What are you looking for?",
         options: ["Marriage", "Serious relationship / partnership", "Casual dating / short term", "Unsure"],
         required: true,
