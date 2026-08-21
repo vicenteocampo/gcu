@@ -2,6 +2,7 @@ import Link from "next/link";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { QUESTIONNAIRE_SECTIONS } from "@/lib/questions";
 import { EligibilityOverride } from "@/components/eligibility-override";
+import { computeUserStatus } from "@/lib/user-status";
 
 export const dynamic = "force-dynamic";
 
@@ -79,6 +80,10 @@ export default async function AdminUserDetailPage({
         <div>
           <p className="text-neutral-400">Email</p>
           <p>{profile.email}</p>
+        </div>
+        <div>
+          <p className="text-neutral-400">Status</p>
+          <p>{computeUserStatus(profile)}</p>
         </div>
         <div>
           <p className="text-neutral-400">School</p>

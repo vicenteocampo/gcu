@@ -2,6 +2,7 @@ import Link from "next/link";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { EligibilityOverride } from "@/components/eligibility-override";
 import { AdminLogoutButton } from "@/components/admin-logout-button";
+import { computeUserStatus } from "@/lib/user-status";
 
 export const dynamic = "force-dynamic";
 
@@ -11,7 +12,7 @@ export default async function AdminPage() {
   const { data: profiles, error } = await admin
     .from("profiles")
     .select(
-      "id, email, full_name, school, based_in, eligibility_status, referral_code, referral_count, activated, questionnaire_completed, created_at"
+      "id, email, full_name, school, based_in, eligibility_status, referral_code, referral_count, activated, onboarding_completed, questionnaire_completed, created_at"
     )
     .order("created_at", { ascending: false });
 
@@ -36,10 +37,9 @@ export default async function AdminPage() {
               <th className="py-2 pr-4">School</th>
               <th className="py-2 pr-4">Based in</th>
               <th className="py-2 pr-4">Eligibility</th>
+              <th className="py-2 pr-4">Status</th>
               <th className="py-2 pr-4">Referral code</th>
               <th className="py-2 pr-4">Referrals</th>
-              <th className="py-2 pr-4">Activated</th>
-              <th className="py-2 pr-4">Questionnaire</th>
               <th className="py-2 pr-4">Created</th>
               <th className="py-2 pr-4"></th>
             </tr>
@@ -54,12 +54,9 @@ export default async function AdminPage() {
                 <td className="py-2 pr-4">
                   <EligibilityOverride profileId={p.id} eligibilityStatus={p.eligibility_status} />
                 </td>
+                <td className="py-2 pr-4">{computeUserStatus(p)}</td>
                 <td className="py-2 pr-4 font-mono">{p.referral_code}</td>
                 <td className="py-2 pr-4">{p.referral_count}</td>
-                <td className="py-2 pr-4">{p.activated ? "Yes" : "No"}</td>
-                <td className="py-2 pr-4">
-                  {p.questionnaire_completed ? "Complete" : "Incomplete"}
-                </td>
                 <td className="py-2 pr-4">
                   {new Date(p.created_at).toLocaleDateString()}
                 </td>
