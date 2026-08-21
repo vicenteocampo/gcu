@@ -1,7 +1,7 @@
 <!--
 Onboarding cards para GCU (Gente Como Uno).
 7 cards, mostradas en orden, navegación next/back, sin poder saltar.
-Editar libremente — la app debe leer este archivo directamente en vez de
+Editar libremente. La app debe leer este archivo directamente en vez de
 tener el copy hardcodeado en el código.
 -->
 
@@ -22,8 +22,8 @@ tener el copy hardcodeado en el código.
 **Cuerpo:** No swiping. No perfiles públicos. No algoritmos. No bullshit. Solo por referidos, así mantenemos esto a un grado de separación.
 
 ## Card 5
-**Título:** Únicamente aceptamos gente de una lista selecta de universidades top en EE.UU. y de Latinoamérica.
-**Cuerpo:** Nos reservamos el derecho de admisión. Cada semana, el GCU Collective te manda un match que creemos puede ser un buen fit.
+**Título:** Únicamente aceptamos gente de una lista selecta de universidades top en USA, o que viva en Latinoamérica.
+**Cuerpo:** Nos reservamos el derecho de admisión. No se trata de volumen, se trata de calidad: te mandamos un match cada vez que encontramos a alguien que creemos que es un buen fit para ti. Trataremos de mandar mínimo uno al mes.
 
 ## Card 6
 **Título:** Responde la encuesta.
