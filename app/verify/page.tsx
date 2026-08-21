@@ -42,14 +42,31 @@ function VerifyForm() {
       type: "magiclink",
     });
 
-    setLoading(false);
-
     if (verifyError) {
+      setLoading(false);
       setError("Could not verify. Try again.");
       return;
     }
 
-    router.push("/onboarding");
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("onboarding_completed, questionnaire_completed")
+      .eq("id", user!.id)
+      .single();
+
+    setLoading(false);
+
+    if (!profile?.onboarding_completed) {
+      router.push("/onboarding");
+    } else if (!profile?.questionnaire_completed) {
+      router.push("/questionnaire");
+    } else {
+      router.push("/account");
+    }
   }
 
   return (

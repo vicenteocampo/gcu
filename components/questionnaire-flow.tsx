@@ -353,17 +353,22 @@ export function QuestionnaireFlow({
   schools,
   locations,
   consentStatements,
+  initialAnswers,
+  isEditing,
 }: {
   sections: QuestionSection[];
   schools: string[];
   locations: string[];
   consentStatements: string[];
+  initialAnswers?: Answers;
+  isEditing?: boolean;
 }) {
   const router = useRouter();
   const totalSteps = sections.length + 1; // + consent
   const [step, setStep] = useState(0);
-  const [answers, setAnswers] = useState<Answers>({});
-  const [consent, setConsent] = useState<boolean[]>(consentStatements.map(() => false));
+  const [answers, setAnswers] = useState<Answers>(initialAnswers ?? {});
+  // Editing already-consented answers doesn't force re-checking every box.
+  const [consent, setConsent] = useState<boolean[]>(consentStatements.map(() => Boolean(isEditing)));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -429,7 +434,7 @@ export function QuestionnaireFlow({
       return;
     }
 
-    router.push("/thank-you");
+    router.push(isEditing ? "/account" : "/thank-you");
   }
 
   return (
@@ -517,7 +522,7 @@ export function QuestionnaireFlow({
                 disabled={loading}
                 className="rounded-md bg-neutral-900 px-5 py-2.5 text-sm font-medium text-white disabled:opacity-50"
               >
-                {loading ? "Submitting..." : "Submit"}
+                {loading ? "Saving..." : isEditing ? "Save changes" : "Submit"}
               </button>
             </div>
           </form>
