@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { EligibilityOverride } from "@/components/eligibility-override";
 import { AdminLogoutButton } from "@/components/admin-logout-button";
@@ -40,6 +41,7 @@ export default async function AdminPage() {
               <th className="py-2 pr-4">Activated</th>
               <th className="py-2 pr-4">Questionnaire</th>
               <th className="py-2 pr-4">Created</th>
+              <th className="py-2 pr-4"></th>
             </tr>
           </thead>
           <tbody>
@@ -60,6 +62,11 @@ export default async function AdminPage() {
                 </td>
                 <td className="py-2 pr-4">
                   {new Date(p.created_at).toLocaleDateString()}
+                </td>
+                <td className="py-2 pr-4">
+                  <Link href={`/admin/users/${p.id}`} className="text-neutral-500 underline">
+                    Más detalles
+                  </Link>
                 </td>
               </tr>
             ))}
