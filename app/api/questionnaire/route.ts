@@ -75,6 +75,7 @@ export async function POST(request: Request) {
         location_on_list: locationOnList,
         eligibility_status: eligibilityStatus,
         questionnaire_completed: true,
+        questionnaire_completed_at: new Date().toISOString(),
       })
       .eq("id", user.id);
 

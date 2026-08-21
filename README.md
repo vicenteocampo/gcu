@@ -111,17 +111,28 @@ completion, questionnaire submission, eligibility overrides) goes through a
 server route using the service-role client, so a signed-in user can never
 self-promote their own `eligibility_status` via the browser.
 
+## Lifecycle email schedule
+
+`app/api/cron/lifecycle-emails/route.ts` runs hourly via Vercel Cron
+(`vercel.json`), authenticated with `CRON_SECRET` (Vercel sends it
+automatically as a Bearer token for its own cron invocations):
+
+- **Onboarding nudge** — 2h / 12h / 24h after finishing onboarding, for
+  anyone who still hasn't finished the questionnaire (anchored on
+  `profiles.onboarding_completed_at`)
+- **Referral reminder** — 2h / 12h / 24h / 36h after finishing the
+  questionnaire, for anyone `eligible` but not yet `activated` (anchored on
+  `profiles.questionnaire_completed_at`); includes their referral code
+- **Activated** — once, when `activated` flips to `true`
+
+Each touchpoint is its own one-off `EmailType` (e.g. `referral_reminder_12h`)
+so it can only send once per profile. Profiles that completed onboarding or
+the questionnaire before the anchor timestamp columns existed (migration
+`0002`) won't get timed reminders — there's no timestamp to anchor them to.
+
 ## Known gaps / TODOs
 
-- Photo upload (`photo_upload` question type, Supabase Storage) hasn't been
-  tested through an actual file picker — everything else in the flow has
-  been verified end-to-end against a live Supabase project.
-- `app/api/cron/lifecycle-emails/route.ts` is a working stub (onboarding
-  nudge, referral reminder, activated) but isn't wired to a schedule. Add a
-  Vercel Cron entry once the content/cadence is approved.
 - Weekly match email template exists (`lib/email/templates.ts`) but there's
   no matching logic yet — out of scope for this pass.
-- Referral reminder currently sends once total per profile, not once per
-  0/2 → 1/2 progress step.
 - Gmail SMTP is a stand-in for a real sending domain — expect it to feel
   slower than a dedicated ESP and to cap out around ~500 sends/day.
