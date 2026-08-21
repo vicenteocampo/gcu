@@ -4,6 +4,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { computeEligibilityStatus } from "@/lib/eligibility";
 import { sendTrackedEmail } from "@/lib/email/send";
 import { submissionConfirmationEmail, onHoldEmail } from "@/lib/email/templates";
+import { recomputeReferrerActivation } from "@/lib/referral-activation";
 
 export async function POST(request: Request) {
   const supabase = await createClient();
@@ -38,19 +39,22 @@ export async function POST(request: Request) {
   }
 
   if (final) {
-    const [{ data: responses }, { data: schools }, { data: locations }] = await Promise.all([
-      supabase
-        .from("questionnaire_responses")
-        .select("question_key, answer")
-        .eq("profile_id", user.id),
-      supabase.from("schools").select("name"),
-      supabase.from("locations").select("name"),
-    ]);
+    const [{ data: responses }, { data: schools }, { data: locations }, { data: ownProfile }] =
+      await Promise.all([
+        supabase
+          .from("questionnaire_responses")
+          .select("question_key, answer")
+          .eq("profile_id", user.id),
+        supabase.from("schools").select("name"),
+        supabase.from("locations").select("name"),
+        supabase.from("profiles").select("referred_by").eq("id", user.id).single(),
+      ]);
 
     const answerByKey = new Map((responses ?? []).map((r) => [r.question_key, r.answer as string]));
     const fullName = answerByKey.get("full_name") ?? null;
     const school = answerByKey.get("education") ?? null;
     const basedIn = answerByKey.get("based_in") ?? null;
+    const gender = answerByKey.get("gender_identity") ?? null;
 
     const schoolNames = new Set((schools ?? []).map((s) => s.name));
     const locationNames = new Set((locations ?? []).map((l) => l.name));
@@ -69,6 +73,7 @@ export async function POST(request: Request) {
       .from("profiles")
       .update({
         full_name: fullName,
+        gender,
         school,
         school_on_list: schoolOnList,
         based_in: basedIn,
@@ -101,6 +106,13 @@ export async function POST(request: Request) {
         subject,
         html,
       });
+    }
+
+    // Gender is only known once the questionnaire is done, so this is the
+    // first point a referrer's activation (1 Male + 1 Female referred) can
+    // actually be decided.
+    if (ownProfile?.referred_by) {
+      await recomputeReferrerActivation(ownProfile.referred_by);
     }
   }
 

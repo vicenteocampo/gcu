@@ -24,7 +24,7 @@ export default async function ThankYouPage() {
             <h1 className="text-2xl font-semibold tracking-tight">You&apos;re in the pool</h1>
             <p className="mt-3 text-neutral-500">
               Thanks for finishing the questionnaire. One thing left: you won&apos;t start
-              receiving matches until you bring 2 people in.
+              receiving matches until you bring in one man and one woman with your code.
             </p>
             <Link
               href="/referral"

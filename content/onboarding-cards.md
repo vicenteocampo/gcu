@@ -27,7 +27,7 @@ tener el copy hardcodeado en el código.
 
 ## Card 6
 **Título:** Responde la encuesta.
-**Cuerpo:** Al terminar, te compartimos tu código de referidos. Trae a 2 personas. Si no, no te pasamos matches.
+**Cuerpo:** Al terminar, te compartimos tu código de referidos. No empiezas a recibir matches hasta que traigas a un hombre y una mujer GCU con tu código.
 
 ## Card 7
 **Título:** Bienvenido a GCU.

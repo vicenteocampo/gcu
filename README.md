@@ -97,6 +97,13 @@ options: the bare code, or the code plus a one-line explanation of GCU
 (`inviteMessage` in that file) — review that copy before shipping to
 production, per Vicente.
 
+`activated` requires **one Male and one Female referral**, not just a raw
+count of 2 — gender is only known once a referred profile finishes the
+questionnaire, so activation is decided then, not at signup. See
+`lib/referral-activation.ts`, called from the questionnaire route. The
+`referral_count` DB trigger (migration `0001`/`0003`) only bumps a display
+counter now; it no longer decides `activated`.
+
 ## Eligibility rule
 
 A profile gets one of three states (`eligibility_status`): `eligible`,

@@ -8,15 +8,38 @@ function inviteMessage(referralCode: string, referralLink: string) {
   return `Te invito a GCU — un círculo de matchmaking selectivo y solo por invitación, para latinoamericanos de las top 30 universidades de USA. Un match por semana, sin swipes, sin perfiles públicos. Únete con mi código: ${referralCode} → ${referralLink}`;
 }
 
+function ChecklistItem({ label, done }: { label: string; done: boolean }) {
+  return (
+    <div
+      className={`flex items-center gap-3 rounded-md border px-4 py-3 ${
+        done ? "border-neutral-900" : "border-neutral-300"
+      }`}
+    >
+      <span
+        className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-medium ${
+          done ? "bg-neutral-900 text-white" : "border border-neutral-300 text-transparent"
+        }`}
+      >
+        {done ? "✓" : "·"}
+      </span>
+      <span className={done ? "text-neutral-900" : "text-neutral-500"}>{label}</span>
+    </div>
+  );
+}
+
 export function ReferralProgress({
   referralCode,
   referralCount,
   activated,
+  hasMale,
+  hasFemale,
   siteUrl,
 }: {
   referralCode: string;
   referralCount: number;
   activated: boolean;
+  hasMale: boolean;
+  hasFemale: boolean;
   siteUrl: string;
 }) {
   const [copiedWhat, setCopiedWhat] = useState<"code" | "message" | null>(null);
@@ -50,20 +73,20 @@ export function ReferralProgress({
               Bring two people in
             </h1>
             <p className="mt-3 text-neutral-500">
-              Before matches start, get 2 people to join with your code.
+              You won&apos;t start receiving matches until you bring in one man and one woman
+              who join and finish the questionnaire.
             </p>
 
-            <div className="mt-6 flex justify-center gap-2">
-              {[0, 1].map((i) => (
-                <div
-                  key={i}
-                  className={`h-2 w-12 rounded-full ${
-                    i < referralCount ? "bg-neutral-900" : "bg-neutral-200"
-                  }`}
-                />
-              ))}
+            <div className="mt-6 space-y-2 text-left">
+              <ChecklistItem label="One man" done={hasMale} />
+              <ChecklistItem label="One woman" done={hasFemale} />
             </div>
-            <p className="mt-2 text-sm text-neutral-400">{referralCount}/2</p>
+            {referralCount > 0 && (
+              <p className="mt-2 text-xs text-neutral-400">
+                {referralCount} {referralCount === 1 ? "person has" : "people have"} signed up
+                with your code so far.
+              </p>
+            )}
 
             <div className="mt-8 rounded-md border border-neutral-300 px-4 py-3">
               <p className="text-xs uppercase tracking-widest text-neutral-400">
