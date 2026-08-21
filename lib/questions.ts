@@ -1,6 +1,6 @@
 // Config-driven questionnaire, transcribed from content/gcu-questionnaire.md.
-// Edit that file for the source-of-truth copy; keep this in sync with it —
-// the generic renderer (components/questionnaire-flow.tsx) reads only this.
+// Edit that file for the source-of-truth copy; keep this in sync with it.
+// The generic renderer (components/questionnaire-flow.tsx) reads only this.
 export type QuestionType =
   | "short_text"
   | "long_text"
@@ -71,7 +71,7 @@ export const QUESTIONNAIRE_SECTIONS: QuestionSection[] = [
       {
         key: "photos",
         type: "photo_upload",
-        label: "Please share a few photos of you — face and body",
+        label: "Please share a few photos of you: face and body",
         minPhotos: 4,
         maxPhotos: 6,
         required: true,
@@ -133,7 +133,7 @@ export const QUESTIONNAIRE_SECTIONS: QuestionSection[] = [
         type: "long_text",
         label: "Tell me about yourself.",
         helperText:
-          "Share your story and lifestyle — hometown, hobbies, interests, fitness level, work, pets, dietary preferences, relationship structure, and whatever else you'd want your match to know.",
+          "Share your story and lifestyle: hometown, hobbies, interests, fitness level, work, pets, dietary preferences, relationship structure, and whatever else you'd want your match to know.",
         required: true,
       },
       { key: "values_that_matter", type: "long_text", label: "Values that are important to you", required: true },

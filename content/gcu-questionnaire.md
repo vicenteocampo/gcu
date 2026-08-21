@@ -24,7 +24,7 @@ Some questions double as eligibility/matching signals — flagged inline.
   - If "Other" is selected: don't reject — flag `school_on_list = false` on the profile. Combined with the LatAm geography gate, this determines whether the user is auto-eligible or goes to "on hold" (see Eligibility section in the main prompt).
 - **languages_spoken** (short_text) — "Languages you speak"
 - **height** (short_text) — "Your height (in meters)", e.g. 1.75
-- **photos** (photo_upload, required, 4–6 images) — "Please share a few photos of you — face and body"
+- **photos** (photo_upload, required, 4–6 images) — "Please share a few photos of you: face and body"
 
 ## Section 2 — What are you looking for
 
@@ -49,7 +49,7 @@ Some questions double as eligibility/matching signals — flagged inline.
   - Options: Yes, Sometimes, No
 - **recreational_drugs** (single_select, required) — "Do you use recreational drugs? Including weed, MDMA, etc."
   - Options: Yes, Sometimes, No
-- **about_yourself** (long_text, required) — "Tell me about yourself. Share your story and lifestyle — hometown, hobbies, interests, fitness level, work, pets, dietary preferences, relationship structure, and whatever else you'd want your match to know."
+- **about_yourself** (long_text, required) — "Tell me about yourself. Share your story and lifestyle: hometown, hobbies, interests, fitness level, work, pets, dietary preferences, relationship structure, and whatever else you'd want your match to know."
 - **values_that_matter** (long_text, required) — "Values that are important to you"
 
 ## Section 4 — Preferences for a match
